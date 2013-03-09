@@ -23,7 +23,6 @@
 %%
 %% @see ssl
 -module(ranch_ssl).
--behaviour(ranch_transport).
 
 -export([name/0]).
 -export([messages/0]).

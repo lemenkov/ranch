@@ -18,7 +18,6 @@
 %%
 %% @see gen_tcp
 -module(ranch_tcp).
--behaviour(ranch_transport).
 
 -export([name/0]).
 -export([messages/0]).
