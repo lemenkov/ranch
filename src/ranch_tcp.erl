@@ -114,7 +114,21 @@ send(Socket, Packet) ->
 -spec sendfile(inet:socket(), file:name())
 	-> {ok, non_neg_integer()} | {error, atom()}.
 sendfile(Socket, Filename) ->
-	file:sendfile(Filename, Socket).
+	sendfile(Filename, Socket, 0).
+
+sendfile(Socket, IoDevice, Sent) ->
+	case file:read(IoDevice, 16#1FFF) of
+		eof ->
+			ok = file:close(IoDevice),
+			{ok, Sent};
+		{ok, Bin} ->
+			case gen_tcp:send(Socket, Bin) of
+				ok ->
+					sendfile(Socket, IoDevice, Sent + byte_size(Bin));
+				{error, Reason} ->
+					{error, Reason}
+			end
+	end.
 
 %% @doc Set options on the given socket.
 %% @see inet:setopts/2
